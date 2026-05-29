@@ -26,6 +26,22 @@
         {{- block "main" . }}{{ end }}
     </main>
     {{ partialCached "footer.html" . .Layout .Kind (.Param "hideFooter") (.Param "ShowCodeCopyButtons") -}}
+
+    {{- /* Mermaid diagram support - only loads when page contains mermaid code blocks */ -}}
+    {{- if .Page.Store.Get "hasMermaid" }}
+    {{- with site.Params.mermaid }}
+    <script type="module">
+        import mermaid from '{{ .source }}';
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: "default",
+            {{- with .config }}{{ range $key, $val := . }}
+            {{ $key }}: {{ $val }},
+            {{- end }}{{ end }}
+        });
+    </script>
+    {{- end }}
+    {{- end }}
 </body>
 
 </html>
